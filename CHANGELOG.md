@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/tokudu/dotfiles/compare/v1.0.3...v1.0.4) (2026-03-31)
+
+
+### Bug Fixes
+
+* Add btop and Malwarebytes installation; remove AppCleaner settings ([#12](https://github.com/tokudu/dotfiles/issues/12)) ([c91b0f4](https://github.com/tokudu/dotfiles/commit/c91b0f4daaf4b5cdc97ec9783f1635fbcf823678))
+
 ## [1.0.3](https://github.com/tokudu/dotfiles/compare/v1.0.2...v1.0.3) (2026-03-31)
 
 
