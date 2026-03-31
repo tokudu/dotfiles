@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/tokudu/dotfiles/compare/v1.0.5...v1.0.6) (2026-03-31)
+
+
+### Bug Fixes
+
+* Remove macOS defaults application from bootstrap.sh ([#17](https://github.com/tokudu/dotfiles/issues/17)) ([3f7b716](https://github.com/tokudu/dotfiles/commit/3f7b716ca2801775e9b5d5d63de446387fc7fbb7))
+
 ## [1.0.5](https://github.com/tokudu/dotfiles/compare/v1.0.4...v1.0.5) (2026-03-31)
 
 
