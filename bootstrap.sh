@@ -45,9 +45,11 @@ function doIt() {
 		--exclude ".release-please-manifest.json" \
 		-avh --no-perms "$TMPDIR_BOOTSTRAP/" ~;
 
-	# Reload shell profile
+	# Reload shell profile (disable nounset — dotfiles aren't written for it)
 	# shellcheck disable=SC1090
+	set +u;
 	source ~/.bash_profile;
+	set -u;
 
 	# Install Homebrew packages (brew.sh installs Homebrew itself if needed)
 	if [[ "$OSTYPE" == darwin* ]]; then
