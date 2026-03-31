@@ -46,10 +46,13 @@ function doIt() {
 	source ~/.bash_profile;
 
 	# Install Homebrew packages (brew.sh installs Homebrew itself if needed)
-	if [[ "$OSTYPE" == darwin* ]] && [ -f ~/.brew.sh ]; then
-		# brew.sh was synced as a dotfile – but it lives at the repo root,
-		# so run it from the extracted tarball instead.
+	if [[ "$OSTYPE" == darwin* ]]; then
 		bash "$TMPDIR_BOOTSTRAP/brew.sh";
+	fi
+
+	# Install and configure macOS-specific apps
+	if [[ "$OSTYPE" == darwin* ]]; then
+		bash "$TMPDIR_BOOTSTRAP/macos.sh";
 	fi
 
 	# Apply macOS defaults
