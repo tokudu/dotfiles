@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5](https://github.com/tokudu/dotfiles/compare/v1.0.4...v1.0.5) (2026-03-31)
+
+
+### Bug Fixes
+
+* guard bash-specific builtins in .bash_profile for zsh compatibility ([#16](https://github.com/tokudu/dotfiles/issues/16)) ([1455fbb](https://github.com/tokudu/dotfiles/commit/1455fbb64aa711de4cb843cbce5da5e441682b71))
+* Remove HTTP and PHP server functions ([#14](https://github.com/tokudu/dotfiles/issues/14)) ([b0ff629](https://github.com/tokudu/dotfiles/commit/b0ff629ff3625f5142c3940d90bd57aca523dabf))
+
 ## [1.0.4](https://github.com/tokudu/dotfiles/compare/v1.0.3...v1.0.4) (2026-03-31)
 
 
