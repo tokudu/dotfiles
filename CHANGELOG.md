@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/tokudu/dotfiles/compare/v1.0.2...v1.0.3) (2026-03-31)
+
+
+### Bug Fixes
+
+* Homebrew permissions for multi-user macOS setups ([#10](https://github.com/tokudu/dotfiles/issues/10)) ([2fd382a](https://github.com/tokudu/dotfiles/commit/2fd382a219b4d0e47d5729896e4fff0b4b7d5f97))
+
 ## [1.0.2](https://github.com/tokudu/dotfiles/compare/v1.0.1...v1.0.2) (2026-03-31)
 
 
