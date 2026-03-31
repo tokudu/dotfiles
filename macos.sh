@@ -53,20 +53,20 @@ defaults write eu.exelban.Stats runAtLoginInitialized -bool true
 brew install --cask little-snitch
 
 # Note: Little Snitch requires a system extension approval and likely a reboot.
-# Most configuration is managed through its own UI/rules editor. The settings
-# below cover the few preferences that can be set via defaults.
+# Configuration is done via its own CLI rather than `defaults write`.
+# The CLI lives at:
+#   /Applications/Little Snitch.app/Contents/Components/littlesnitch
+# You must first enable Terminal access:
+#   Little Snitch > Settings > Security > Allow access via Terminal
 
-# Enable automatic profile switching (e.g. switch rules by network)
-defaults write at.obdev.LittleSnitchConfiguration AutomaticProfileSwitching -bool true
+LS_CLI="/Applications/Little Snitch.app/Contents/Components/littlesnitch"
+if [ -x "$LS_CLI" ]; then
+	# Allow CLI access (required for the commands below)
+	sudo "$LS_CLI" write-preference allowCommandLineAccess true
 
-# Show status icon in menu bar
-defaults write at.obdev.LittleSnitchConfiguration StatusItemVisible -bool true
-
-# Approve unapproved connections silently when in silent mode (deny)
-defaults write at.obdev.LittleSnitchConfiguration SilentModeAction -int 1
-
-# Check for updates automatically
-defaults write at.obdev.LittleSnitchConfiguration SUEnableAutomaticChecks -bool true
+	# Allow GUI scripting (AppleScript/automation)
+	sudo "$LS_CLI" write-preference allowGUIScripting true
+fi
 
 ###############################################################################
 # AppCleaner — https://freemacsoft.net/appcleaner                            #
