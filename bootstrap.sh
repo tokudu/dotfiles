@@ -13,6 +13,10 @@ function doIt() {
 		--exclude "LICENSE-MIT.txt" \
 		-avh --no-perms . ~;
 	source ~/.bash_profile;
+	# Apply macOS defaults if running on macOS
+	if [[ "$OSTYPE" == darwin* ]] && [ -f ~/.macos ]; then
+		source ~/.macos;
+	fi;
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
