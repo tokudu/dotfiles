@@ -83,13 +83,6 @@ sync_and_install() {
 
     info "Running macos.sh…"
     bash "$TMPDIR_BOOTSTRAP/macos.sh"
-
-    # Apply macOS defaults (sourced so it inherits the current environment)
-    if [[ -f ~/.macos ]]; then
-      info "Applying macOS defaults…"
-      # shellcheck disable=SC1090
-      set +eu; source ~/.macos; set -eu
-    fi
   fi
 
   info "Done."
