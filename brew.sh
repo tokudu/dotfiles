@@ -7,12 +7,27 @@ if ! command -v brew &> /dev/null; then
 	echo "Installing Homebrew..."
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-	# Add Homebrew to PATH for the rest of this script
+	# Determine the Homebrew prefix path
 	if [ -f /opt/homebrew/bin/brew ]; then
-		eval "$(/opt/homebrew/bin/brew shellenv)"
+		BREW_BIN="/opt/homebrew/bin/brew"
 	elif [ -f /usr/local/bin/brew ]; then
-		eval "$(/usr/local/bin/brew shellenv)"
+		BREW_BIN="/usr/local/bin/brew"
+	else
+		echo "Error: Homebrew installation not found." >&2
+		exit 1
 	fi
+
+	# Persist Homebrew shellenv in ~/.bash_profile so future shells have it
+	SHELLENV_LINE="eval \"\$(${BREW_BIN} shellenv)\""
+	if ! grep -qF "$SHELLENV_LINE" ~/.bash_profile 2>/dev/null; then
+		echo "" >> ~/.bash_profile
+		echo "# Homebrew" >> ~/.bash_profile
+		echo "$SHELLENV_LINE" >> ~/.bash_profile
+	fi
+
+	# Source it now so the rest of this script can use brew
+	eval "$($BREW_BIN shellenv)"
+	source ~/.bash_profile
 fi
 
 # Make sure we’re using the latest Homebrew.
