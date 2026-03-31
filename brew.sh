@@ -123,8 +123,5 @@ brew install pyenv
 brew install rbenv
 brew install nvm
 
-# Install macOS GUI apps.
-brew install stats
-
 # Remove outdated versions from the cellar.
 brew cleanup
