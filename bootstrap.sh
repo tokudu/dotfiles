@@ -2,78 +2,106 @@
 set -euo pipefail
 
 REPO="tokudu/dotfiles"
+[[ "$OSTYPE" == darwin* ]] && IS_MACOS=true || IS_MACOS=false
 
-# ---------- helpers ----------------------------------------------------------
+# ---------- output helpers ---------------------------------------------------
+# Gracefully degrade if tput isn't available (e.g. non-interactive CI pipe)
+_tput() { command -v tput &>/dev/null && tput "$@" 2>/dev/null || true; }
+BOLD="$(_tput bold)"; GREEN="$(_tput setaf 2)"; YELLOW="$(_tput setaf 3)"
+RED="$(_tput setaf 1)"; RESET="$(_tput sgr0)"
 
+info() { echo "${BOLD}${GREEN}==>${RESET}${BOLD} $*${RESET}"; }
+warn() { echo "${BOLD}${YELLOW}warning:${RESET} $*" >&2; }
+die()  { echo "${BOLD}${RED}error:${RESET} $*" >&2; exit 1; }
+
+# ---------- cleanup ----------------------------------------------------------
 cleanup() {
-	if [ -n "${TMPDIR_BOOTSTRAP:-}" ] && [ -d "$TMPDIR_BOOTSTRAP" ]; then
-		rm -rf "$TMPDIR_BOOTSTRAP"
-	fi
+  [[ -n "${TMPDIR_BOOTSTRAP:-}" && -d "$TMPDIR_BOOTSTRAP" ]] \
+    && rm -rf "$TMPDIR_BOOTSTRAP"
 }
 trap cleanup EXIT
 
-# ---------- download source tarball -------------------------------------------
-
+# ---------- download source tarball ------------------------------------------
 TMPDIR_BOOTSTRAP="$(mktemp -d)"
 
-# Try the latest GitHub release first; fall back to the main branch archive
-# if no release exists yet (the releases/latest endpoint returns 404).
-echo "Fetching latest release from ${REPO}…"
+info "Fetching latest release info for ${REPO}…"
 RELEASE_JSON="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null || true)"
-TARBALL_URL="$(echo "$RELEASE_JSON" | grep '"tarball_url"' | cut -d '"' -f 4)"
 
-if [ -n "$TARBALL_URL" ]; then
-	echo "Downloading release tarball…"
-else
-	echo "No release found — falling back to main branch archive…"
-	TARBALL_URL="https://github.com/${REPO}/archive/refs/heads/main.tar.gz"
+# python3 is reliable on macOS; far more robust than grep|cut for JSON
+TAG=""
+if [[ -n "$RELEASE_JSON" ]]; then
+  TAG="$(echo "$RELEASE_JSON" \
+    | python3 -c "import sys,json; print(json.load(sys.stdin).get('tag_name',''))" \
+    2>/dev/null || true)"
 fi
 
-curl -fsSL "$TARBALL_URL" | tar xz -C "$TMPDIR_BOOTSTRAP" --strip-components=1
+if [[ -n "$TAG" ]]; then
+  info "Downloading release ${TAG}…"
+  TARBALL_URL="https://github.com/${REPO}/archive/refs/tags/${TAG}.tar.gz"
+else
+  warn "No release found — falling back to main branch archive."
+  TARBALL_URL="https://github.com/${REPO}/archive/refs/heads/main.tar.gz"
+fi
 
-# ---------- sync dotfiles to $HOME ------------------------------------------
+curl -fsSL -o "$TMPDIR_BOOTSTRAP/dotfiles.tar.gz" "$TARBALL_URL" \
+  || die "Failed to download ${TARBALL_URL}"
+tar xz -C "$TMPDIR_BOOTSTRAP" --strip-components=1 -f "$TMPDIR_BOOTSTRAP/dotfiles.tar.gz"
+rm "$TMPDIR_BOOTSTRAP/dotfiles.tar.gz"
 
-function doIt() {
-	rsync --exclude ".git/" \
-		--exclude ".DS_Store" \
-		--exclude ".osx" \
-		--exclude "bootstrap.sh" \
-		--exclude "README.md" \
-		--exclude "LICENSE-MIT.txt" \
-		--exclude ".github/" \
-		--exclude "release-please-config.json" \
-		--exclude ".release-please-manifest.json" \
-		-avh --no-perms "$TMPDIR_BOOTSTRAP/" ~;
+# ---------- sync dotfiles to $HOME and run setup -----------------------------
+sync_and_install() {
+  info "Syncing dotfiles to ${HOME}…"
+  rsync \
+    --exclude ".git/" \
+    --exclude ".DS_Store" \
+    --exclude ".osx" \
+    --exclude "bootstrap.sh" \
+    --exclude "README.md" \
+    --exclude "LICENSE-MIT.txt" \
+    --exclude ".github/" \
+    --exclude "release-please-config.json" \
+    --exclude ".release-please-manifest.json" \
+    -avh --no-perms "$TMPDIR_BOOTSTRAP/" ~
 
-	# Reload shell profile (disable nounset — dotfiles aren't written for it)
-	# shellcheck disable=SC1090
-	set +u;
-	source ~/.bash_profile;
-	set -u;
+  # Reload shell profile.
+  # Disable both -e and -u: dotfiles aren't written for strict mode,
+  # and a non-fatal error here shouldn't abort the whole bootstrap.
+  if [[ -f ~/.bash_profile ]]; then
+    info "Sourcing ~/.bash_profile…"
+    set +eu
+    # shellcheck disable=SC1090
+    source ~/.bash_profile
+    set -eu
+  else
+    warn "~/.bash_profile not found after sync — skipping."
+  fi
 
-	# Install Homebrew packages (brew.sh installs Homebrew itself if needed)
-	if [[ "$OSTYPE" == darwin* ]]; then
-		bash "$TMPDIR_BOOTSTRAP/brew.sh";
-	fi
+  if $IS_MACOS; then
+    # brew.sh installs Homebrew itself if needed
+    info "Running brew.sh…"
+    bash "$TMPDIR_BOOTSTRAP/brew.sh"
 
-	# Install and configure macOS-specific apps
-	if [[ "$OSTYPE" == darwin* ]]; then
-		bash "$TMPDIR_BOOTSTRAP/macos.sh";
-	fi
+    info "Running macos.sh…"
+    bash "$TMPDIR_BOOTSTRAP/macos.sh"
 
-	# Apply macOS defaults
-	if [[ "$OSTYPE" == darwin* ]] && [ -f ~/.macos ]; then
-		source ~/.macos;
-	fi
+    # Apply macOS defaults (sourced so it inherits the current environment)
+    if [[ -f ~/.macos ]]; then
+      info "Applying macOS defaults…"
+      # shellcheck disable=SC1090
+      set +eu; source ~/.macos; set -eu
+    fi
+  fi
+
+  info "Done."
 }
 
-if [ "${1:-}" == "--force" ] || [ "${1:-}" == "-f" ]; then
-	doIt;
+# ---------- confirm and run --------------------------------------------------
+if [[ "${1:-}" == "--force" || "${1:-}" == "-f" ]]; then
+  sync_and_install
 else
-	read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
-	echo "";
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		doIt;
-	fi;
-fi;
-unset -f doIt;
+  read -rp "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
+  echo
+  [[ $REPLY =~ ^[Yy]$ ]] && sync_and_install
+fi
+
+unset -f sync_and_install
