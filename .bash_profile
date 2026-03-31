@@ -8,6 +8,24 @@ else
 	BREW_PREFIX="";
 fi;
 
+# Homebrew settings
+# SECURITY: Disable anonymous analytics/data collection
+export HOMEBREW_NO_ANALYTICS=1;
+
+# SECURITY: Disable automatic updates before every command
+# This prevents unintended version changes and background network calls
+export HOMEBREW_NO_AUTO_UPDATE=1;
+
+# PERFORMANCE: Disable automatic cleanup of downloads/old versions
+# Helps keep your environment static until you choose to clean it
+export HOMEBREW_NO_INSTALL_CLEANUP=1;
+
+# Disable emojis for a cleaner, text-only terminal output
+export HOMEBREW_NO_EMOJI=1;
+
+# Set a custom age (in days) for manual cleanup if ever run
+export HOMEBREW_CLEANUP_MAX_AGE_DAYS=30;
+
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don't want to commit.

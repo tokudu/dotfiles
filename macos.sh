@@ -68,5 +68,17 @@ defaults write at.obdev.LittleSnitchConfiguration SilentModeAction -int 1
 # Check for updates automatically
 defaults write at.obdev.LittleSnitchConfiguration SUEnableAutomaticChecks -bool true
 
-echo "Done. Stats and Little Snitch have been installed and configured."
+###############################################################################
+# AppCleaner — https://freemacsoft.net/appcleaner                            #
+###############################################################################
+
+brew install --cask appcleaner
+
+# Enable SmartDelete (automatically detect when apps are moved to Trash)
+defaults write com.nektony.AppCleaner SUEnableAutomaticChecks -bool true
+
+# Protect default Apple apps from removal
+defaults write com.nektony.AppCleaner SIPProtectionEnabled -bool true
+
+echo "Done. Stats, Little Snitch, and AppCleaner have been installed and configured."
 echo "Note: Little Snitch requires a system extension approval in System Settings > Privacy & Security."
