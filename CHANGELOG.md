@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/tokudu/dotfiles/compare/v1.0.0...v1.0.1) (2026-03-31)
+
+
+### Bug Fixes
+
+* bootstrap.sh 404 fallback and unbound variable error ([#6](https://github.com/tokudu/dotfiles/issues/6)) ([101907f](https://github.com/tokudu/dotfiles/commit/101907f638484b2163542c3d7301861734f1582c))
+
 ## 1.0.0 (2026-03-31)
 
 
