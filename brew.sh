@@ -124,7 +124,7 @@ brew install rbenv
 brew install nvm
 
 # Install macOS GUI apps.
-brew install --cask stats
+brew install stats
 
 # Remove outdated versions from the cellar.
 brew cleanup
