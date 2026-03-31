@@ -13,6 +13,9 @@ fi
 ###############################################################################
 
 brew install stats
+brew install btop
+brew install --cask malwarebytes
+brew install --cask rectangle
 
 # Enable the modules you want in the menu bar
 defaults write eu.exelban.Stats CPU_state -bool true
@@ -73,12 +76,6 @@ defaults write at.obdev.LittleSnitchConfiguration SUEnableAutomaticChecks -bool 
 ###############################################################################
 
 brew install --cask appcleaner
-
-# Enable SmartDelete (automatically detect when apps are moved to Trash)
-defaults write com.nektony.AppCleaner SUEnableAutomaticChecks -bool true
-
-# Protect default Apple apps from removal
-defaults write com.nektony.AppCleaner SIPProtectionEnabled -bool true
 
 echo "Done. Stats, Little Snitch, and AppCleaner have been installed and configured."
 echo "Note: Little Snitch requires a system extension approval in System Settings > Privacy & Security."
