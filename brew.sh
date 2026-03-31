@@ -30,6 +30,24 @@ if ! command -v brew &> /dev/null; then
 	source ~/.bash_profile
 fi
 
+# Fix Homebrew permissions for multi-user setups.
+# When multiple admin users share a Mac, /opt/homebrew must be group-writable
+# by the "admin" group so any admin user can run brew.
+fix_brew_permissions() {
+	local brew_prefix
+	brew_prefix="$(brew --prefix)"
+
+	if [ ! -w "$brew_prefix" ]; then
+		echo "Fixing Homebrew permissions for multi-user setup..."
+		sudo chgrp -R admin "$brew_prefix"
+		sudo chmod -R g+w "$brew_prefix"
+		# Set setgid so new files/dirs inherit the admin group
+		sudo find "$brew_prefix" -type d -exec chmod g+s {} +
+		echo "Homebrew permissions fixed. All admin users can now use brew."
+	fi
+}
+fix_brew_permissions
+
 # Make sure we're using the latest Homebrew.
 brew update
 
