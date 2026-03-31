@@ -12,19 +12,23 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# ---------- download latest release tarball ----------------------------------
-
-echo "Fetching latest release from ${REPO}…"
-TARBALL_URL="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" \
-	| grep '"tarball_url"' | cut -d '"' -f 4)"
-
-if [ -z "$TARBALL_URL" ]; then
-	echo "Error: could not determine the latest release tarball URL." >&2
-	exit 1
-fi
+# ---------- download source tarball -------------------------------------------
 
 TMPDIR_BOOTSTRAP="$(mktemp -d)"
-echo "Downloading release tarball…"
+
+# Try the latest GitHub release first; fall back to the main branch archive
+# if no release exists yet (the releases/latest endpoint returns 404).
+echo "Fetching latest release from ${REPO}…"
+RELEASE_JSON="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null || true)"
+TARBALL_URL="$(echo "$RELEASE_JSON" | grep '"tarball_url"' | cut -d '"' -f 4)"
+
+if [ -n "$TARBALL_URL" ]; then
+	echo "Downloading release tarball…"
+else
+	echo "No release found — falling back to main branch archive…"
+	TARBALL_URL="https://github.com/${REPO}/archive/refs/heads/main.tar.gz"
+fi
+
 curl -fsSL "$TARBALL_URL" | tar xz -C "$TMPDIR_BOOTSTRAP" --strip-components=1
 
 # ---------- sync dotfiles to $HOME ------------------------------------------
@@ -41,9 +45,11 @@ function doIt() {
 		--exclude ".release-please-manifest.json" \
 		-avh --no-perms "$TMPDIR_BOOTSTRAP/" ~;
 
-	# Reload shell profile
+	# Reload shell profile (disable nounset — dotfiles aren't written for it)
 	# shellcheck disable=SC1090
+	set +u;
 	source ~/.bash_profile;
+	set -u;
 
 	# Install Homebrew packages (brew.sh installs Homebrew itself if needed)
 	if [[ "$OSTYPE" == darwin* ]]; then
