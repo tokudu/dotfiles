@@ -50,26 +50,13 @@ defaults write eu.exelban.Stats SUEnableAutomaticChecks -bool true
 defaults write eu.exelban.Stats runAtLoginInitialized -bool true
 
 ###############################################################################
-# Little Snitch — https://obdev.at/products/littlesnitch                     #
+# Little Snitch Mini — https://obdev.at/products/littlesnitch-mini           #
 ###############################################################################
 
-brew install --cask little-snitch
-
-# Note: Little Snitch requires a system extension approval and likely a reboot.
-# Most configuration is managed through its own UI/rules editor. The settings
-# below cover the few preferences that can be set via defaults.
-
-# Enable automatic profile switching (e.g. switch rules by network)
-defaults write at.obdev.LittleSnitchConfiguration AutomaticProfileSwitching -bool true
-
-# Show status icon in menu bar
-defaults write at.obdev.LittleSnitchConfiguration StatusItemVisible -bool true
-
-# Approve unapproved connections silently when in silent mode (deny)
-defaults write at.obdev.LittleSnitchConfiguration SilentModeAction -int 1
+brew install --cask little-snitch-mini
 
 # Check for updates automatically
-defaults write at.obdev.LittleSnitchConfiguration SUEnableAutomaticChecks -bool true
+defaults write at.obdev.LittleSnitchMini SUEnableAutomaticChecks -bool true
 
 ###############################################################################
 # AppCleaner — https://freemacsoft.net/appcleaner                            #
@@ -77,5 +64,4 @@ defaults write at.obdev.LittleSnitchConfiguration SUEnableAutomaticChecks -bool 
 
 brew install --cask appcleaner
 
-echo "Done. Stats, Little Snitch, and AppCleaner have been installed and configured."
-echo "Note: Little Snitch requires a system extension approval in System Settings > Privacy & Security."
+echo "Done. Stats, Little Snitch Mini, and AppCleaner have been installed and configured."
