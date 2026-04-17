@@ -77,10 +77,6 @@ sync_and_install() {
   fi
 
   if $IS_MACOS; then
-    # brew.sh installs Homebrew itself if needed
-    info "Running brew.sh…"
-    bash "$TMPDIR_BOOTSTRAP/brew.sh"
-
     info "Running macos.sh…"
     bash "$TMPDIR_BOOTSTRAP/macos.sh"
   fi

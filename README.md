@@ -14,7 +14,7 @@ Forked from [Mathias Bynens' dotfiles](https://github.com/mathiasbynens/dotfiles
 ### Updated tooling
 - **Python 3**: Replaced all Python 2 usage (`SimpleHTTPServer`, `urllib`) with Python 3 equivalents
 - **Homebrew**: Removed all deprecated `--with-*` flags; fixed renamed formulae (`bash-completion@2`, `ghostscript`)
-- **Modern CLI tools**: Added `ripgrep`, `fd`, `bat`, `fzf`, `eza`, `jq`, `gh`, `git-delta`, `htop`, `tldr`
+- **Modern CLI tools**: Added `ripgrep`, `fd`, `bat`, `fzf`, `eza`, `jq`, `gh`, `git-delta`, `htop`, `tlrc`
 - **Removed obsolete packages**: `ack`, `p7zip`, `hashpump`, `cifer`, `dex2jar`, `foremost`, `knock`, `screen`, `sfnt2woff`, etc.
 
 ### Version managers
@@ -83,15 +83,15 @@ When setting up a new Mac, you may want to set some sensible macOS defaults:
 ./.macos
 ```
 
-### Install Homebrew formulae
+### Install macOS tooling
 
-When setting up a new Mac, you may want to install some common [Homebrew](https://brew.sh/) formulae. The script installs Homebrew itself if needed:
+When setting up a new Mac, `macos.sh` installs Homebrew if needed, installs the CLI tools and apps used by these dotfiles, and applies the app-specific macOS defaults:
 
 ```bash
-./brew.sh
+./macos.sh
 ```
 
-Some of the functionality of these dotfiles depends on formulae installed by `brew.sh`. If you don't plan to run `brew.sh`, you should look carefully through the script and manually install any particularly important ones. A good example is Bash/Git completion: the dotfiles use a special version from Homebrew.
+Some of the functionality of these dotfiles depends on formulae installed by `macos.sh`. If you don't plan to run it, you should look carefully through the script and manually install any particularly important ones. A good example is Bash/Git completion: the dotfiles use a special version from Homebrew.
 
 ## Feedback
 
