@@ -152,12 +152,6 @@ configure_stats() {
 	log_success "Configured Stats"
 }
 
-configure_little_snitch_mini() {
-	log_section "Configuring Little Snitch Mini"
-	defaults write at.obdev.LittleSnitchMini SUEnableAutomaticChecks -bool true
-	log_success "Configured Little Snitch Mini"
-}
-
 # On Apple Silicon, /usr/local Homebrew may be a stale Intel install from
 # migration, or it may be intentionally kept for Rosetta-only formulae.
 if [[ "$(uname -m)" == "arm64" && -x /usr/local/bin/brew ]]; then
@@ -308,7 +302,6 @@ macos_formulae=(
 macos_casks=(
 	malwarebytes
 	rectangle
-	little-snitch-mini
 	appcleaner
 )
 
@@ -340,7 +333,6 @@ install_formulas "${macos_formulae[@]}"
 install_casks "${macos_casks[@]}"
 
 configure_stats
-configure_little_snitch_mini
 
 log_section "Cleanup"
 brew cleanup
