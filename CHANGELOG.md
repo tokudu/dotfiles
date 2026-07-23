@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/tokudu/dotfiles/compare/v1.0.6...v1.1.0) (2026-07-23)
+
+
+### Features
+
+* combine brew.sh and macos ([#21](https://github.com/tokudu/dotfiles/issues/21)) ([845b7c9](https://github.com/tokudu/dotfiles/commit/845b7c95682b9826075087c176cf8a934cf747fb))
+
+
+### Bug Fixes
+
+* replace Little Snitch with Little Snitch Mini ([#19](https://github.com/tokudu/dotfiles/issues/19)) ([9075ffe](https://github.com/tokudu/dotfiles/commit/9075ffec45bb59a604cda533755b7e58c14df6e0))
+
 ## [1.0.6](https://github.com/tokudu/dotfiles/compare/v1.0.5...v1.0.6) (2026-03-31)
 
 
